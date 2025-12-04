@@ -1,0 +1,48 @@
+name: Test MunicipalMCP Server
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', '3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Test API connectivity
+      run: |
+        curl -f "https://api.municode.com/States/abbr?stateAbbr=VA" || exit 1
+    
+    - name: Run basic tests
+      run: |
+        python test_server.py
+    
+    - name: Verify MCP server imports
+      run: |
+        python -c "
+        import sys
+        sys.path.append('.')
+        try:
+            exec(open('municode-mcp-server.py').read().split('if __name__')[0])
+            print('✅ MCP server imports successfully')
+        except Exception as e:
+            print(f'❌ Import error: {e}')
+            sys.exit(1)
+        "

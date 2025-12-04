@@ -25,6 +25,7 @@ from mcp.types import (
     ImageContent,
     EmbeddedResource,
     LoggingLevel,
+    ServerCapabilities,
 )
 from pydantic import BaseModel
 
@@ -560,8 +561,9 @@ async def main():
             InitializationOptions(
                 server_name="municode",
                 server_version="1.0.0",
-                capabilities=server.get_capabilities(
-                    notification_options=None
+                capabilities=ServerCapabilities(
+                    tools={"listChanged": True},
+                    resources={"listChanged": True, "subscribe": True}
                 )
             )
         )

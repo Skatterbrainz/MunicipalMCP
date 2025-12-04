@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "municode": {
+      "command": "python3",
+      "args": ["/path/to/MunicipalMCP/municode-mcp-server.py"],
+      "description": "Access municipal codes and ordinances from Municode digital library",
+      "env": {}
+    }
+  }
+}
